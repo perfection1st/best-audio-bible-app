@@ -1,10 +1,12 @@
 import './App.css'
 
-function App() {
+import AudioPlayer from './components/AudioPlayer';
 
+function App() {
+  
   return (
     <>
-      
+      <AudioPlayer />
     </>
   )
 }
