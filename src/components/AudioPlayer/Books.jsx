@@ -20,18 +20,32 @@ export default function Books(props) {
         <>
         <div className="book-selection-container">
         <div className="old-testament-books">
+            <h2>Old Testament</h2>
+        <div className="old-testament-buttons">
+            <ul>
         {otBooks.map((book, index) => (
+            <li>
             <button key={index} onClick={() => handleSetBook(book)}>
                 {book}
             </button>
+            </li>
         ))}
+        </ul>
+        </div>
         </div>
         <div className="new-testament-books">
-        {ntBooks.map((book, index) => (
-            <button key={index} onClick={() => handleSetBook(book)}>
-                {book}
-            </button>
-        ))}
+            <h2>New Testament</h2>
+        <div className="new-testament-buttons">
+            <ul>
+            {ntBooks.map((book, index) => (
+                <li>
+                <button key={index} onClick={() => handleSetBook(book)}>
+                    {book}
+                </button>
+                </li>
+            ))}
+            </ul>
+        </div>
         </div>
         </div>
         </>

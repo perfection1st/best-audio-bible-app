@@ -18,7 +18,7 @@ export default function AudioPlayer() {
 // SETUP DEFAULTS
 
 // Uses CDN url from env file or defaults to localhost
-const AUDIO_CDN = import.meta.env.VITE_AUDIO_CDN_URL || "http://172.20.7.47:3000";
+const AUDIO_CDN = import.meta.env.VITE_AUDIO_CDN_URL || "http://172.20.7.47:3000"; // IP of local machine
 
 // Set default bible version to king james version
 const [version, setVersion] = useState('kjv');
@@ -176,7 +176,7 @@ function handleOnLoadStart() {
   return (
     <>
     <Header />
-    <main className="book-chapter-selection">
+    <main>
     {isError && <div className="error">{errorMessage}</div>}
     {isLoading && <div className="loading">Loading...</div>}
     <audio muted
@@ -195,10 +195,12 @@ function handleOnLoadStart() {
     <Books
       setCurrentBook={setCurrentBook}
     />
+    {/*}
     <Chapters
       currentBook={currentBook}
       setCurrentChapter={setCurrentChapter}
     />
+  {*/}
     </main>
     <footer>
     <Controls

@@ -1,5 +1,4 @@
-// IMPORT HOOKS
-// import { useState, useEffect } from 'react';
+import './css/Controls.css';
 
 import bibleData from '../../data/bible.json';
 
