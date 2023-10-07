@@ -119,14 +119,18 @@ function handleOnCanPlayThrough() {
     audioRef.current.play()
       .then(() => {
         console.log("Play Successful");
-        setIsLoading(false);
       })
       .catch((e) => {
         console.log("Play Error", e); 
-        setIsLoading(false); // Ensure loading state is false on failure
+      })
+      .finally(() => {
+        setIsLoading(false); // Ensure loading state is false in all cases
       });
+  } else {
+    setIsLoading(false); // Ensure loading state is false if audio is not paused
   }
 }
+
 
 
 
