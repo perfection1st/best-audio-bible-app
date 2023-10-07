@@ -62,7 +62,6 @@ const [currentTime, setCurrentTime] = useState(0);
 
 // Effect runs on application load and then each time currentChapter changes or audioIsLoaded changes
 useEffect(() => {
-  console.log(audioRef);
   setAudioSrc(`${AUDIO_CDN}/${version}/${currentBook}/${currentChapter}`);
 }, [currentChapter, audioIsLoaded]);
 
@@ -165,8 +164,6 @@ function getNextChapter(currentBook, currentChapter) {
 }
 
 function handleNextChapter() {
-  console.log('fired nextChapter');
-  
   const { book: nextBook, chapter: nextChapter } = getNextChapter(currentBook, currentChapter);
   setCurrentBook(nextBook);
   setCurrentChapter(nextChapter);
