@@ -112,7 +112,7 @@ function handleUpdateCurrentTime() {
 }
 
 // Function to handle when audio has been loaded enough to play
-function handleOnCanPlay() {
+function handleOnCanPlayThrough() {
   setAudioIsLoaded(true);
   audioRef.current.muted = false;
 
@@ -187,7 +187,7 @@ function handleOnLoadStart() {
       src={audioSrc}
       onTimeUpdate={handleUpdateCurrentTime}
       onError={handleError}
-      onCanPlay={handleOnCanPlay}
+      onCanPlayThrough={handleOnCanPlayThrough}
       onLoadedMetadata={handleLoadedMetaData}
       onPlay={handleOnPlay}
       onPause={handleOnPause}
@@ -214,6 +214,7 @@ function handleOnLoadStart() {
         audioRef={audioRef}
         audioSrc={audioSrc}
         audioDuration={audioDuration}
+        audioIsLoaded={audioIsLoaded}
         currentTime={currentTime}
         setCurrentTime={setCurrentTime}
         isPlaying={isPlaying}

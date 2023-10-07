@@ -15,6 +15,7 @@ export default function Controls(props) {
 const { 
     audioRef,
     audioSrc,
+    audioIsLoaded,
     isPlaying,
     setIsPlaying,
     audioDuration,
@@ -103,18 +104,26 @@ function handlePreviousChapter() {
 
 // FAST FORWARD 10 SECONDS
 function handleFastForward() {
-    if (isLoading) return;
-    const newTime = Math.min(audioRef.current.currentTime + 10, audioRef.current.duration -0.1);
-    audioRef.current.currentTime = newTime;
-    setCurrentTime(newTime); 
+    console.log('Fast Forward Before:', audioRef.current.currentTime);
+    console.log('Ready State:', audioRef.current.readyState);
+    if (audioRef.current.readyState >= 3) {
+        const newTime = Math.min(audioRef.current.currentTime + 10, audioRef.current.duration);
+        console.log('New Time:', newTime);
+        audioRef.current.currentTime = newTime;
+    }
+    console.log('Fast Forward After:', audioRef.current.currentTime);
 }
 
+
 function handleRewind() {
-    if (isLoading) return;
-    const newTime = Math.max(audioRef.current.currentTime - 10, 0);
-    audioRef.current.currentTime = newTime;
-    setCurrentTime(newTime); 
+    console.log('Rewind Before:', audioRef.current.currentTime);
+    if (audioRef.current.readyState >= 3) {
+        const newTime = Math.max(audioRef.current.currentTime - 10, 0);
+        audioRef.current.currentTime = newTime;
+    }
+    console.log('Rewind After:', audioRef.current.currentTime);
 }
+
 
 
 
