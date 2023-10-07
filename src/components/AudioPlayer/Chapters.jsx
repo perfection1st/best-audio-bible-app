@@ -1,3 +1,5 @@
+import './css/Chapters.css';
+
 // IMPORT BIBLE DATA
 import bibleData from '../../data/bible.json';
 
@@ -8,7 +10,7 @@ const otBooks = bibleData.filter(book => book.testament === "Old Testament").map
 const ntBooks = bibleData.filter(book => book.testament === "New Testament").map(book => book.name);
 
 export default function Chapters(props) {
-    const {currentBook, setCurrentChapter} = props;
+    const {currentBook, setCurrentChapter, setShowBooks} = props;
 
     const bookData = bibleData.find(book => book.name === currentBook);
     const chapters = bookData ? bookData.chapters : 0;
@@ -16,12 +18,20 @@ export default function Chapters(props) {
 
     return(
         <>
-        <h2>CHAPTERS</h2>
-        {[...Array(chapters).keys()].map((_, index) => (
-            <button key={index} onClick={() => setCurrentChapter(index + 1)}>
-              {index + 1}
-            </button>
-        ))}
+        <div className="chapter-selection-container">
+            <h2>Select chapter</h2>
+            <div className="chapter-buttons">
+                <ul>
+                {[...Array(chapters).keys()].map((_, index) => (
+                    <li key={index}>
+                        <button onClick={() => { setCurrentChapter(index + 1); setShowBooks(true); }}>
+                            {index + 1}
+                        </button>
+                    </li>
+                ))}
+                </ul>
+            </div>
+        </div>
         </>
     )
 }

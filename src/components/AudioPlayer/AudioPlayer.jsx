@@ -17,6 +17,10 @@ import bibleData from '../../data/bible.json';
 export default function AudioPlayer() {
 // SETUP DEFAULTS
 
+// Sets a visibility state for showing Books or Chapters component
+
+const [showBooks, setShowBooks] = useState(true);
+
 // Uses CDN url from env file or defaults to localhost
 const AUDIO_CDN = import.meta.env.VITE_AUDIO_CDN_URL || "http://172.20.7.47:3000"; // IP of local machine
 
@@ -61,7 +65,6 @@ useEffect(() => {
   console.log(audioRef);
   setAudioSrc(`${AUDIO_CDN}/${version}/${currentBook}/${currentChapter}`);
 }, [currentChapter, audioIsLoaded]);
-
 
 // ERROR HANDLING FOR THE AUDIO ELEMENT
 
@@ -175,10 +178,10 @@ function handleOnLoadStart() {
 
   return (
     <>
-    <Header />
+    <Header showBooks={showBooks} setShowBooks={setShowBooks} />
     <main>
-    {isError && <div className="error">{errorMessage}</div>}
-    {isLoading && <div className="loading">Loading...</div>}
+    {isError && <div className="error"><p>{errorMessage}</p></div>}
+    {isLoading && <div className="loading"><p>Loading...</p> <span className="loader"></span></div>}
     <audio muted
       ref={audioRef} 
       src={audioSrc}
@@ -192,15 +195,19 @@ function handleOnLoadStart() {
       onLoadStart={handleOnLoadStart}
     >
     </audio>
-    <Books
-      setCurrentBook={setCurrentBook}
-    />
-    {/*}
-    <Chapters
-      currentBook={currentBook}
-      setCurrentChapter={setCurrentChapter}
-    />
-  {*/}
+    {showBooks ?
+        <Books
+        setCurrentBook={setCurrentBook}
+        setCurrentChapter={setCurrentChapter}
+        setShowBooks={setShowBooks}
+        />
+        :
+        <Chapters
+        currentBook={currentBook}
+        setCurrentChapter={setCurrentChapter}
+        setShowBooks={setShowBooks}
+        />
+    }
     </main>
     <footer>
     <Controls

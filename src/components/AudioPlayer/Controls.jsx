@@ -2,6 +2,14 @@ import './css/Controls.css';
 
 import bibleData from '../../data/bible.json';
 
+// Import Icon SVG's
+import playIcon from '../../assets/icons/light/play.svg';
+import pauseIcon from '../../assets/icons/light/pause.svg';
+import rewindIcon from '../../assets/icons/light/rewind.svg';
+import fastForwardIcon from '../../assets/icons/light/fast-forward.svg';
+import nextIcon from '../../assets/icons/light/next.svg';
+import previousIcon from '../../assets/icons/light/previous.svg';
+
 export default function Controls(props) {
 
 const { 
@@ -112,6 +120,11 @@ function handleRewind() {
 
 return(
     <>
+    <section className="now-playing">
+        <h3>{currentBook} {currentChapter ? currentChapter : ""}</h3>
+    </section>
+
+    <section className="seek">
         <input
             id="scrubber"
             type="range"
@@ -121,14 +134,19 @@ return(
             max={audioDuration}
             onChange={(e) => { handleSeek(e) }}
         />
-        <label htmlFor="scrubber">{formattedCurrentTime}/{formattedAudioDuration}</label>
-        <button onClick={handlePlay}>Play</button>
-        <button onClick={handlePause}>Pause</button>
-        <button onClick={handlePlayPause}>Play/Pause</button>
-        <button onClick={handleNextChapter}>Next Chapter</button>
-        <button onClick={handlePreviousChapter}>Previous Chapter</button>
-        <button onClick={handleFastForward}>Forward 10s</button>
-        <button onClick={handleRewind}>Rewind 10s</button>
+        <p className="current-time"><label htmlFor="scrubber">{formattedCurrentTime}/{formattedAudioDuration}</label></p>
+    </section>
+
+    <section className="audio-control-buttons">
+        {/*}<button onClick={handlePlay}>Play</button>{*/}
+        {/*}<button onClick={handlePause}>Pause</button>{*/}
+        <button className="back" onClick={handleRewind}><span>10s</span><img src={rewindIcon} alt="Rewind 10 Seconds" /></button>
+        <button className="previous" onClick={handlePreviousChapter}><span>Prev</span><img src={previousIcon} alt="Previous Chapter" /></button>
+        <button className={isPlaying ? "playing" : "paused"} onClick={handlePlayPause}><img src={isPlaying ? pauseIcon : playIcon} alt={isPlaying ? "Play" : "Pause"} /></button>
+        <button className="next" onClick={handleNextChapter}><span>Next</span><img src={nextIcon} alt="Next Chapter" /></button>
+        <button className="forward" onClick={handleFastForward}><span>10s</span><img src={fastForwardIcon} alt="Fast Forward 10 Seconds" /></button>
+        
+    </section>
     </>
 )
 }

@@ -10,10 +10,11 @@ const otBooks = bibleData.filter(book => book.testament === "Old Testament").map
 const ntBooks = bibleData.filter(book => book.testament === "New Testament").map(book => book.name);
 
 export default function Books(props) {
-    const { setCurrentBook } = props;
+    const { setCurrentBook, setShowBooks } = props;
 
     function handleSetBook(book) {
         setCurrentBook(book);
+        setShowBooks(false);
     }
 
     return(
@@ -24,8 +25,8 @@ export default function Books(props) {
         <div className="old-testament-buttons">
             <ul>
         {otBooks.map((book, index) => (
-            <li>
-            <button key={index} onClick={() => handleSetBook(book)}>
+            <li key={index}>
+            <button onClick={() => handleSetBook(book)}>
                 {book}
             </button>
             </li>
@@ -38,8 +39,8 @@ export default function Books(props) {
         <div className="new-testament-buttons">
             <ul>
             {ntBooks.map((book, index) => (
-                <li>
-                <button key={index} onClick={() => handleSetBook(book)}>
+                <li key={index}>
+                <button onClick={() => handleSetBook(book)}>
                     {book}
                 </button>
                 </li>
