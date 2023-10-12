@@ -9,8 +9,7 @@ const otBooks = bibleData.filter(book => book.testament === "Old Testament").map
 // Get new testament books
 const ntBooks = bibleData.filter(book => book.testament === "New Testament").map(book => book.name);
 
-export default function Books(props) {
-    const { setCurrentBook, setShowBooks } = props;
+export default function Books({ setCurrentBook, setShowBooks }) {
 
     function handleSetBook(book) {
         setCurrentBook(book);

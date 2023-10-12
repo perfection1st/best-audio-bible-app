@@ -46,6 +46,7 @@
     text-shadow:0 1px 0 #000;
     border-radius:10px;
     backdrop-filter:blur(5px);
+    -webkit-backdrop-filter:blur(5px);
     transition:all 0.2s;
     font-size:2.5vh;
     font-weight:800;

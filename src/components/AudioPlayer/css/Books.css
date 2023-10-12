@@ -25,6 +25,7 @@
     text-shadow:0 1px 0 #000;
     border-radius:10px;
     backdrop-filter:blur(5px);
+    -webkit-backdrop-filter:blur(5px);
     transition:all 0.2s;
 }
 .book-selection-container button:active {
@@ -44,9 +45,11 @@
     padding:1vh;
     box-shadow:inset 10px 0px -20px 10px #000;
     overflow-y:scroll;
+    overflow-x:hidden;
 }
 .new-testament-books {
     overflow-y:scroll;
+    overflow-x:hidden;
     display:flex;
     flex-direction:column;
     width:100%;

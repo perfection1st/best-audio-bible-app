@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import './css/Controls.css';
 
 import bibleData from '../../data/bible.json';
@@ -10,146 +11,171 @@ import fastForwardIcon from '../../assets/icons/light/fast-forward.svg';
 import nextIcon from '../../assets/icons/light/next.svg';
 import previousIcon from '../../assets/icons/light/previous.svg';
 
-export default function Controls(props) {
+export default function Controls({ audioRef, isLoading, setIsLoading, isPlaying, setIsPlaying, handlePlay, handlePlayPause, audioDuration, currentTime, setCurrentTime, currentBook, setCurrentBook, currentChapter, setCurrentChapter }) {
 
-const { 
-    audioRef,
-    audioSrc,
-    audioIsLoaded,
-    isPlaying,
-    setIsPlaying,
-    audioDuration,
-    currentTime,
-    setCurrentTime,
-    currentBook,
-    setCurrentBook,
-    currentChapter,
-    setCurrentChapter,
-    handleNextChapter,
-    isLoading
-} = props;
+    // Display readable time
+    const formatTime = (time) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = Math.floor(time - minutes * 60);
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    };
 
-// PLAY/PAUSE
-function handlePlayPause() {
-    if(isPlaying) {
-        audioRef.current.pause();
-    } else {
-        audioRef.current.play();
+    function formatDuration(duration) {
+        const minutes = Math.floor(duration / 60);
+        const seconds = Math.floor(duration % 60);
+    
+        // Adding a leading zero if seconds are less than 10
+        const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
+    
+        return `${minutes}:${formattedSeconds}`;
     }
-}
 
-// PLAY
-function handlePlay() {
-    audioRef.current.play();
-}
+    // Handle scrubbing
+    const handleScrub = (e) => {
+        console.log('handleScrub fired, audioRef.current.currentTime is: ', audioRef.current.currentTime);
+        console.log('Audio duration is: ', audioRef.current.duration);
+        audioRef.current.currentTime = e.target.value;
+    };
 
-// PAUSE
-function handlePause() {
-    audioRef.current.pause();
-}
+    // Helper function for finding the previous chapter/book
+    function getPreviousChapter(currentBook, currentChapter) {
+        // Ensure currentChapter is a number
+        currentChapter = parseInt(currentChapter, 10);
 
-// Helper function to format audio time into human readable time
-function formatTime(seconds) {
-    const min = Math.floor(seconds / 60);
-    const sec = Math.floor(seconds % 60);
-    return `${min}:${sec.toString().padStart(2, '0')}`;
-}
-// Format the time the user sees
-const formattedCurrentTime = formatTime(currentTime);
-const formattedAudioDuration = formatTime(audioDuration);
+        // Find the current book data with a case-insensitive comparison
+        const bookData = bibleData.find(book => book.name.toLowerCase() === currentBook.toLowerCase());
 
+        // If for some reason the book isn't found, default to Revelation 22
+        if (!bookData) {
+            return { book: "Revelation", chapter: 22 };
+        }
 
-// SCRUBBER FUNCTIONS
+        // If the current chapter isn't the first chapter in the current book
+        if (currentChapter > 1) {
+            return { book: currentBook, chapter: currentChapter - 1 };
+        }
 
-// Seek
-function handleSeek(e) {
-    setCurrentTime(e.target.value);
-    audioRef.current.currentTime = e.target.value;
-}
+        // If the current chapter is the first chapter in the current book
+        const prevBookIndex = bibleData.findIndex(book => book.name.toLowerCase() === currentBook.toLowerCase()) - 1;
 
-// Helper function for finding the previous chapter/book
-function getPreviousChapter(currentBook, currentChapter) {
-    // Find the current book data
-    const bookData = bibleData.find(book => book.name === currentBook);
-    
-    if (!bookData) {
-      // If for some reason the book isn't found, default to Revelation 22 (last chapter of the last book)
-      return { book: "Revelation", chapter: 22 };
+        // If the previous book exists, return the last chapter of that book
+        if (prevBookIndex >= 0) {
+            return { book: bibleData[prevBookIndex].name, chapter: bibleData[prevBookIndex].chapters };
+        }
+
+        // If the current book is the first in the list, wrap around to the end
+        // Retrieving the number of chapters in Revelation dynamically
+        const revelationData = bibleData.find(book => book.name === "Revelation");
+        const lastChapterOfRevelation = revelationData ? revelationData.chapters : 22;
+
+        return { book: "Revelation", chapter: lastChapterOfRevelation };
     }
-    
-// If the current chapter isn't the first chapter in the current book
-    if (currentChapter > 1) {
-      return { book: currentBook, chapter: currentChapter - 1 };
-    } 
-    
-// If the current chapter is the first chapter in the current book
-    const prevBookIndex = bibleData.findIndex(book => book.name === currentBook) - 1;
-    
-    // If the previous book exists, return the last chapter of that book
-    if (prevBookIndex >= 0) {
-      return { book: bibleData[prevBookIndex].name, chapter: bibleData[prevBookIndex].chapters };
-    } 
-    
-    // If the current book is the first in the list, wrap around to the end
-    return { book: "Revelation", chapter: 22 };  // Assuming 22 chapters in Revelation, adjust as necessary
-}
 
-// PREVIOUS CHAPTER
-function handlePreviousChapter() {
-    const { book: prevBook, chapter: prevChapter } = getPreviousChapter(currentBook, currentChapter);
-    
-    setCurrentBook(prevBook);
-    setCurrentChapter(prevChapter);
-}
 
-// FAST FORWARD 10 SECONDS
-function handleFastForward() {
-    if (audioRef.current.readyState >= 3) {
-        const newTime = Math.min(audioRef.current.currentTime + 10, audioRef.current.duration);
-        audioRef.current.currentTime = newTime;
+    function getNextChapter(currentBook, currentChapter) {
+        // Ensure currentChapter is a number
+        currentChapter = parseInt(currentChapter, 10);
+
+        // Find the current book data with case-insensitive comparison
+        const bookData = bibleData.find(book => book.name.toLowerCase() === currentBook.toLowerCase());
+
+        // If for some reason the book isn't found, default to Genesis 1
+        if (!bookData) {
+            return { book: "Genesis", chapter: 1 };
+        }
+
+        // If the current chapter isn't the last chapter in the current book
+        if (currentChapter < bookData.chapters) {
+            return { book: currentBook, chapter: currentChapter + 1 };
+        }
+
+        // If the current chapter is the last chapter in the current book
+        const nextBookIndex = bibleData.findIndex(book => book.name.toLowerCase() === currentBook.toLowerCase()) + 1;
+
+        // If the next book exists, return the first chapter of that book
+        if (nextBookIndex < bibleData.length) {
+            return { book: bibleData[nextBookIndex].name, chapter: 1 };
+        }
+
+        // If the current book is the last in the list, wrap around to the start
+        return { book: "Genesis", chapter: 1 };
     }
-}
 
 
-function handleRewind() {
-    if (audioRef.current.readyState >= 3) {
-        const newTime = Math.max(audioRef.current.currentTime - 10, 0);
-        audioRef.current.currentTime = newTime;
+    // Handle Next Chapter
+    function handleNextChapter() {
+        const { book: nextBook, chapter: nextChapter } = getNextChapter(currentBook, currentChapter);
+        setCurrentBook(nextBook);
+        setCurrentChapter(nextChapter);
+        handlePlay();
     }
-}
+
+    // Handle Previous Chapter
+    function handlePreviousChapter() {
+        const { book: prevBook, chapter: prevChapter } = getPreviousChapter(currentBook, currentChapter);
+        setCurrentBook(prevBook);
+        setCurrentChapter(prevChapter);
+    }
+
+    // Handle fast foward
+    function handleFastForward() {
+        let fastForwardInterval = 10;
+        let currentTime = audioRef.current.currentTime;
+        let duration = audioRef.current.duration;
+
+        // If the currentTime + 10 is going to be longer than our audio file, go to the next chapter
+        if (currentTime + fastForwardInterval < duration) {
+            audioRef.current.currentTime = audioRef.current.currentTime + fastForwardInterval;
+        } else if (currentTime + fastForwardInterval > duration) {
+            handleNextChapter();
+        }
+    }
+    // Handle Rewind
+    function handleRewind() {
+        let rewindInterval = 10;
+        let currentTime = audioRef.current.currentTime;
+        let epsilon = 0.4; // Adjusts tolerance for the rewind at the start of the audio
+
+        if (currentTime <= rewindInterval && currentTime > epsilon) {
+            // Rewind to the start of the track
+            audioRef.current.currentTime = 0;
+        } else if (currentTime <= epsilon) {
+            // If already at the start of the track, go to previous chapter
+            handlePreviousChapter();
+        } else {
+            // Otherwise, rewind the audio by the rewind interval
+            audioRef.current.currentTime = currentTime - rewindInterval;
+        }
+    }
 
 
 
+    return (
+        <>
+            <section className="now-playing">
+                <h3>{currentBook} {currentChapter}</h3>
+            </section>
 
-return(
-    <>
-    <section className="now-playing">
-        <h3>{currentBook} {currentChapter ? currentChapter : ""}</h3>
-    </section>
+            <section className="seek">
+                <input
+                    id="scrubber"
+                    type="range"
+                    value={currentTime}
+                    step="1"
+                    min="0"
+                    max={audioDuration}
+                    onChange={handleScrub}
+                />
+                <p className="current-time"><label htmlFor="scrubber">{formatTime(currentTime)}/{ formatDuration(audioDuration)}</label></p>
+            </section>
 
-    <section className="seek">
-        <input
-            id="scrubber"
-            type="range"
-            value={currentTime}
-            step="1"
-            min="0"
-            max={audioDuration}
-            onChange={(e) => { handleSeek(e) }}
-        />
-        <p className="current-time"><label htmlFor="scrubber">{formattedCurrentTime}/{formattedAudioDuration}</label></p>
-    </section>
-
-    <section className="audio-control-buttons">
-        {/*}<button onClick={handlePlay}>Play</button>{*/}
-        {/*}<button onClick={handlePause}>Pause</button>{*/}
-        <button className="back" onClick={handleRewind}><span>10s</span><img src={rewindIcon} alt="Rewind 10 Seconds" /></button>
-        <button className="previous" onClick={handlePreviousChapter}><span>Prev</span><img src={previousIcon} alt="Previous Chapter" /></button>
-        <button className={isPlaying ? "playing" : "paused"} onClick={handlePlayPause}><img src={isPlaying ? pauseIcon : playIcon} alt={isPlaying ? "Play" : "Pause"} /></button>
-        <button className="next" onClick={handleNextChapter}><span>Next</span><img src={nextIcon} alt="Next Chapter" /></button>
-        <button className="forward" onClick={handleFastForward}><span>10s</span><img src={fastForwardIcon} alt="Fast Forward 10 Seconds" /></button>
-        
-    </section>
-    </>
-)
+            <section className="audio-control-buttons">
+                <button className="back" onClick={handleRewind}><span>10s</span><img src={rewindIcon} alt="Rewind 10 Seconds" /></button>
+                <button className="previous" onClick={handlePreviousChapter}><span>Prev</span><img src={previousIcon} alt="Previous Chapter" /></button>
+                <button className={isPlaying ? "playing" : "paused"} onClick={handlePlayPause}><img src={isPlaying ? pauseIcon : playIcon} alt={isPlaying ? "Play" : "Pause"} /></button>
+                <button className="next" onClick={handleNextChapter}><span>Next</span><img src={nextIcon} alt="Next Chapter" /></button>
+                <button className="forward" onClick={handleFastForward}><span>10s</span><img src={fastForwardIcon} alt="Fast Forward 10 Seconds" /></button>
+            </section>
+        </>
+    )
 }

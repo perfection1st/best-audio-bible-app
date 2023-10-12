@@ -1,8 +1,6 @@
 import './css/Header.css';
 
-export default function Header(props) {
-    const { showBooks, setShowBooks } = props;
-
+export default function Header({ showBooks, setShowBooks }) {
     return(
         <>
             <header>
