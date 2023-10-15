@@ -184,7 +184,8 @@ export default function Controls({
                 <input
                     id="scrubber"
                     type="range"
-                    defaultValue={currentTime}
+                    defaultValue={0}
+                    value={currentTime}
                     step="1"
                     min="0"
                     max={audioDuration}
