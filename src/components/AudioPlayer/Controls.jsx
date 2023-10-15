@@ -48,17 +48,18 @@ export default function Controls({
     }
 
     // Handle scrubbing
-    const handleStartScrub = (e) => {
-        console.log('handleStartScrub fired:', isScrubbing);
-        setIsScrubbing(false);
-    };
+    const handleStartScrub = () => {
+        setIsScrubbing(true);
+      };
 
-    const handleEndScrub = (e) => {
-        console.log('handleendScrub fired, audioRef.current.currentTime is: ', audioRef.current.currentTime);
-        console.log('Audio duration is: ', audioRef.current.duration);
-        audioRef.current.currentTime = e.target.value;
-        setCurrentTime(e.target.value);
-    }
+      const handleEndScrub = (e) => {
+        if (isScrubbing) {
+          const newTime = e.target.value;
+          audioRef.current.currentTime = newTime;
+          setCurrentTime(newTime);
+          setIsScrubbing(false);
+        }
+      };
 
     // Helper function for finding the previous chapter/book
     function getPreviousChapter(currentBook, currentChapter) {
@@ -183,7 +184,7 @@ export default function Controls({
                 <input
                     id="scrubber"
                     type="range"
-                    value={currentTime}
+                    defaultValue={currentTime}
                     step="1"
                     min="0"
                     max={audioDuration}
