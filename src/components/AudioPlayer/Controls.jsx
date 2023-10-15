@@ -11,7 +11,24 @@ import fastForwardIcon from '../../assets/icons/light/fast-forward.svg';
 import nextIcon from '../../assets/icons/light/next.svg';
 import previousIcon from '../../assets/icons/light/previous.svg';
 
-export default function Controls({ audioRef, isLoading, setIsLoading, isPlaying, setIsPlaying, handlePlay, handlePlayPause, audioDuration, currentTime, setCurrentTime, currentBook, setCurrentBook, currentChapter, setCurrentChapter }) {
+export default function Controls({
+    audioRef,
+    isLoading,
+    setIsLoading,
+    isPlaying,
+    setIsPlaying,
+    handlePlay,
+    handlePlayPause,
+    audioDuration,
+    currentTime,
+    setCurrentTime,
+    currentBook,
+    setCurrentBook,
+    currentChapter,
+    setCurrentChapter,
+    isScrubbing,
+    setIsScrubbing
+}) {
 
     // Display readable time
     const formatTime = (time) => {
@@ -23,19 +40,25 @@ export default function Controls({ audioRef, isLoading, setIsLoading, isPlaying,
     function formatDuration(duration) {
         const minutes = Math.floor(duration / 60);
         const seconds = Math.floor(duration % 60);
-    
+
         // Adding a leading zero if seconds are less than 10
         const formattedSeconds = seconds < 10 ? '0' + seconds : seconds;
-    
+
         return `${minutes}:${formattedSeconds}`;
     }
 
     // Handle scrubbing
-    const handleScrub = (e) => {
-        console.log('handleScrub fired, audioRef.current.currentTime is: ', audioRef.current.currentTime);
+    const handleStartScrub = (e) => {
+        console.log('handleStartScrub fired:', isScrubbing);
+        setIsScrubbing(false);
+    };
+
+    const handleEndScrub = (e) => {
+        console.log('handleendScrub fired, audioRef.current.currentTime is: ', audioRef.current.currentTime);
         console.log('Audio duration is: ', audioRef.current.duration);
         audioRef.current.currentTime = e.target.value;
-    };
+        setCurrentTime(e.target.value);
+    }
 
     // Helper function for finding the previous chapter/book
     function getPreviousChapter(currentBook, currentChapter) {
@@ -164,9 +187,10 @@ export default function Controls({ audioRef, isLoading, setIsLoading, isPlaying,
                     step="1"
                     min="0"
                     max={audioDuration}
-                    onChange={handleScrub}
+                    onChange={handleEndScrub}
+                    onMouseDown={handleStartScrub}
                 />
-                <p className="current-time"><label htmlFor="scrubber">{formatTime(currentTime)}/{ formatDuration(audioDuration)}</label></p>
+                <p className="current-time"><label htmlFor="scrubber">{formatTime(currentTime)}/{formatDuration(audioDuration)}</label></p>
             </section>
 
             <section className="audio-control-buttons">
@@ -174,7 +198,7 @@ export default function Controls({ audioRef, isLoading, setIsLoading, isPlaying,
                 <button className="previous" onClick={handlePreviousChapter}><span>Prev</span><img src={previousIcon} alt="Previous Chapter" /></button>
                 <button className={isPlaying ? "playing" : "paused"} onClick={handlePlayPause}><img src={isPlaying ? pauseIcon : playIcon} alt={isPlaying ? "Play" : "Pause"} /></button>
                 <button className="next" onClick={handleNextChapter}><span>Next</span><img src={nextIcon} alt="Next Chapter" /></button>
-                <button className="forward" onClick={handleFastForward}><span>10s</span><img src={fastForwardIcon} alt="Fast Forward 10 Seconds" /></button>
+                <button className="forward" disabled={isLoading} onClick={handleFastForward}><span>10s</span><img src={fastForwardIcon} alt="Fast Forward 10 Seconds" /></button>
             </section>
         </>
     )

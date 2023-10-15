@@ -6,6 +6,7 @@ export default function Header({ showBooks, setShowBooks }) {
             <header>
                 {!showBooks && <button className="back-to-books" onClick={() => { setShowBooks(true); }}>Back</button>}
                 <h1>The Holy Bible</h1>
+                <p className="app-version">ver {APP_VERSION}</p>
             </header>
         </>
     )

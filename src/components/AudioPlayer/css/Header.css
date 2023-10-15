@@ -31,3 +31,14 @@ header h1 {
     transition:all 0.2s;
     transform:translateY(-50%);
 }
+.app-version {
+    position:absolute;
+    right:5%;
+    top:50%;
+    padding:1.5vh;
+    font-size:1vh;
+    font-family:'Josefin Sans', sans-serif;
+    color:#f3f3f3;
+    text-shadow:0 1px 0 #000;
+    transform:translateY(-50%);
+}

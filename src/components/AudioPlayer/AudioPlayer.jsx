@@ -33,6 +33,9 @@ export default function AudioPlayer() {
   // Playing state
   const [isPlaying, setIsPlaying] = useState(false);
 
+  // Scrubbing state
+  const [isScrubbing, setIsScrubbing] = useState(false);
+
   // State to hold current version
   const [currentVersion, setCurrentVersion] = useState('kjv');
 
@@ -63,7 +66,9 @@ export default function AudioPlayer() {
     currentBook,
     setCurrentBook,
     currentChapter,
-    setCurrentChapter
+    setCurrentChapter,
+    isScrubbing,
+    setIsScrubbing
   }
 
   const headerProps = {
@@ -114,12 +119,15 @@ export default function AudioPlayer() {
   }
 
   // Set audio duration after meta data loads
-  function handleLoadedMetadata() {
+  function handleDurationChange() {
     setAudioDuration(audioRef.current.duration);
   }
 
+  // Update time state as time changes
   function handleTimeUpdate() {
-    setCurrentTime(audioRef.current.currentTime);
+    if(!isScrubbing) {
+      setCurrentTime(audioRef.current.currentTime);
+    }
   }
 
   // Set the isPlaying state to true/false based on the audio element events onPlay or onPause
@@ -159,7 +167,7 @@ export default function AudioPlayer() {
       onPlay={() => { setIsPlaying(true); }}
       onPause={() => { setIsPlaying(false); }}
       onAbort={() => {setIsPlaying(false); } }
-      onLoadedMetadata={handleLoadedMetadata}
+      onDurationChange={handleDurationChange}
       onTimeUpdate={handleTimeUpdate}
     >
       Your browser does not support the audio element.
