@@ -14,8 +14,7 @@ import Chapters from './Chapters';
 import bibleData from '../../data/bible.json';
 
 // Get Audio API
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
-const API_TOKEN = import.meta.env.VITE_API_TOKEN;
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function AudioPlayer() {
 
