@@ -15,6 +15,7 @@ import bibleData from '../../data/bible.json';
 
 // Get Audio API
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
+const API_TOKEN = import.meta.env.VITE_API_TOKEN;
 
 export default function AudioPlayer() {
 
@@ -95,7 +96,7 @@ export default function AudioPlayer() {
 
   // useEffect to load in audio file
   useEffect(() => {
-    audioRef.current.src = `${API_URL}/${currentVersion}/${currentBook}/${currentChapter}`;
+    audioRef.current.src = `${API_URL}/${currentVersion}/${currentBook}/${currentChapter}.mp3`;
     audioRef.current.load();
     handlePlay();
   }, [currentChapter]);
