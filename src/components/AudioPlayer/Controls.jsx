@@ -184,7 +184,6 @@ export default function Controls({
                 <input
                     id="scrubber"
                     type="range"
-                    defaultValue={0}
                     value={currentTime}
                     step="1"
                     min="0"
