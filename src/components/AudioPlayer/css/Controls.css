@@ -82,6 +82,7 @@ footer {
 /** SCRUBBER **/
 #scrubber {
     width:100%;
+    height:100%;
     appearance: none;
     background: transparent;
     outline: none;

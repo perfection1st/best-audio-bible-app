@@ -190,6 +190,7 @@ export default function Controls({
                     max={audioDuration}
                     onChange={handleEndScrub}
                     onMouseDown={handleStartScrub}
+                    onTouchStart={handleStartScrub}
                 />
                 <p className="current-time"><label htmlFor="scrubber">{formatTime(currentTime)}/{formatDuration(audioDuration)}</label></p>
             </section>
