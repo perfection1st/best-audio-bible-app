@@ -2,20 +2,25 @@ header {
     width:100%;
     height:100%;
     display:grid;
+    grid-template-columns:25% 50% 25%;
+    grid-template-rows:1fr;
     align-items:center;
-    justify-items:center;
     background-color:rgba(0,0,0,0.8);
     border-bottom:1px solid rgba(255,255,255,0.2);
     backdrop-filter:blur(5px);
     -webkit-backdrop-filter:blur(5px);
 }
+.nav {
+    height:100%;
+    display:grid;
+    align-content:center;
+    justify-items:center;
+}
 header h1 {
     font-size:3.5vh;
+    text-align:center;
 }
 .back-to-books {
-    position:absolute;
-    left:5%;
-    top:50%;
     padding:1.5vh;
     font-size:2.5vh;
     font-family:'Josefin Sans', sans-serif;
@@ -29,16 +34,12 @@ header h1 {
     backdrop-filter:blur(5px);
     -webkit-backdrop-filter:blur(5px);
     transition:all 0.2s;
-    transform:translateY(-50%);
 }
 .app-version {
-    position:absolute;
-    right:5%;
-    top:50%;
     padding:1.5vh;
     font-size:1vh;
     font-family:'Josefin Sans', sans-serif;
     color:#f3f3f3;
     text-shadow:0 1px 0 #000;
-    transform:translateY(-50%);
+    justify-self:right;
 }
