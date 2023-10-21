@@ -27,7 +27,8 @@ export default function Controls({
     currentChapter,
     setCurrentChapter,
     isScrubbing,
-    setIsScrubbing
+    setIsScrubbing,
+    handleNextChapter
 }) {
 
     // Display readable time
