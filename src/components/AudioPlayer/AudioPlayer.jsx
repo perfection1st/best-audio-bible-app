@@ -68,7 +68,9 @@ export default function AudioPlayer() {
     currentChapter,
     setCurrentChapter,
     isScrubbing,
-    setIsScrubbing
+    setIsScrubbing,
+    getNextChapter,
+    handleNextChapter
   }
 
   const headerProps = {
@@ -152,6 +154,44 @@ export default function AudioPlayer() {
     }
 }
 
+function getNextChapter(currentBook, currentChapter) {
+  // Ensure currentChapter is a number
+  currentChapter = parseInt(currentChapter, 10);
+
+  // Find the current book data with case-insensitive comparison
+  const bookData = bibleData.find(book => book.name.toLowerCase() === currentBook.toLowerCase());
+
+  // If for some reason the book isn't found, default to Genesis 1
+  if (!bookData) {
+      return { book: "Genesis", chapter: 1 };
+  }
+
+  // If the current chapter isn't the last chapter in the current book
+  if (currentChapter < bookData.chapters) {
+      return { book: currentBook, chapter: currentChapter + 1 };
+  }
+
+  // If the current chapter is the last chapter in the current book
+  const nextBookIndex = bibleData.findIndex(book => book.name.toLowerCase() === currentBook.toLowerCase()) + 1;
+
+  // If the next book exists, return the first chapter of that book
+  if (nextBookIndex < bibleData.length) {
+      return { book: bibleData[nextBookIndex].name, chapter: 1 };
+  }
+
+  // If the current book is the last in the list, wrap around to the start
+  return { book: "Genesis", chapter: 1 };
+}
+
+
+// Handle Next Chapter
+function handleNextChapter() {
+  const { book: nextBook, chapter: nextChapter } = getNextChapter(currentBook, currentChapter);
+  setCurrentBook(nextBook);
+  setCurrentChapter(nextChapter);
+  handlePlay();
+}
+
   return (
     <>
     <Header {...headerProps} />
@@ -169,6 +209,7 @@ export default function AudioPlayer() {
       onAbort={() => {setIsPlaying(false); } }
       onDurationChange={handleDurationChange}
       onTimeUpdate={handleTimeUpdate}
+      onEnded={handleNextChapter}
     >
       Your browser does not support the audio element.
     </audio>
