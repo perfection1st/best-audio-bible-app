@@ -100,7 +100,7 @@ export default function AudioPlayer() {
     audioRef.current.src = `${API_URL}/${currentVersion}/${currentBook}/${currentChapter}.mp3`;
     audioRef.current.load();
     handlePlay();
-  }, [currentChapter]);
+  }, [currentChapter, currentBook]);
 
   function handleAudioError(e) {
     setIsLoading(false);
